@@ -1,0 +1,92 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+.history/*
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
+.DS_Store
+Thumbs.db
+.env
+backend/.env
+backend/.env.docker
+.env
+
+# ---------- Additional secrets safety net ----------
+.env.*
+!.env.example
+backend/.env.*
+!backend/.env.example
+
+# ---------- Python ----------
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# ---------- Build/deploy artifacts — not source, regenerate on demand ----------
+deploy-package.zip
+frontend-deploy.zip
+src.zip
+cloudflared.exe
+
+# ---------- Local test output — disposable ----------
+cookies.txt
+test.csv
+test.pdf
+test.xlsx
+test-report.xlsx
+# Environment files
+.env
+.env.*
+env
+env.*
+backend/.env
+backend/.env.*
+
+# Virtual environment
+backend/venv/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# ZIP/archive files
+*.zip

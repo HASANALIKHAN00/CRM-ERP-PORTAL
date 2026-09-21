@@ -1,0 +1,394 @@
+:host {
+  --color-primary: #0F241A;
+  --color-primary-hover: #163428;
+  --color-primary-light: #EDF5F1;
+  --color-cream: #FCFBF8;
+  --color-border: #E7ECE8;
+  --color-text: #17211B;
+  --color-text-secondary: #69756E;
+}
+
+.app-shell {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.app-shell--activity {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.app-header {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  margin-bottom: 0;
+  gap: 0;
+  background: #ffffff;
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 4px 20px rgba(15, 36, 26, 0.04);
+  flex-shrink: 0;
+  font-family: 'Manrope', system-ui, sans-serif;
+  white-space: nowrap;
+  transition: margin-left 280ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.rt-header-offset {
+    height: 52px;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    margin-left: 288px;
+
+    .logo {
+      height: 40px;
+    }
+  }
+}
+
+@media (max-width: 1199px) {
+  .app-header.rt-header-offset {
+    margin-left: 72px;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-header.rt-header-offset {
+    margin-left: 0;
+  }
+}
+
+.logo-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.divider {
+  width: 1px;
+  height: 28px;
+  align-self: center;
+  margin: 0 16px;
+  background: var(--color-border);
+  flex-shrink: 0;
+}
+
+.app-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-text);
+  white-space: nowrap;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.demo-env-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  margin-right: 20px;
+  border: 1px solid #d7e0da;
+  border-radius: 999px;
+  background: #f4f7f5;
+  color: #5a6b62;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  padding: 0 18px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  .nav-icon {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba(15, 36, 26, 0.04);
+    color: var(--color-text);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &.active {
+    background: var(--color-primary-light);
+    color: var(--color-text);
+  }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.right-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.profile-menu-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 14px 0 6px;
+  background: var(--color-cream);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  flex-shrink: 0;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.profile-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+}
+
+.profile-flyout {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 31;
+  width: 220px;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(15, 36, 26, 0.14);
+  padding: 14px;
+  box-sizing: border-box;
+}
+
+.profile-flyout-name {
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-flyout-role {
+  font-weight: 600;
+  font-size: 11.5px;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+  margin-bottom: 12px;
+}
+
+.profile-flyout-logout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 999px;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 12.5px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+
+  svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  &:hover { background: var(--color-primary-hover); }
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 11px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.user-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.user-name {
+  font-weight: 800;
+  font-size: 12.5px;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.user-role {
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.logout-btn {
+  height: 40px;
+  padding: 0 18px;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 999px;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 12.5px;
+  color: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.18s ease, width 0.12s ease, padding 0.12s ease;
+
+  .logout-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    display: none;
+  }
+
+  &:hover {
+    background: var(--color-primary-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.app-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+app-chat, app-dashboard {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+// ---- Responsive header behavior ----
+// ≤860px: drop the app title, tighten gaps slightly. Everything else
+// keeps its natural size (nowrap + flex-shrink: 0 already enforced above).
+@media (max-width: 860px) {
+  .app-header {
+    padding: 0 12px;
+  }
+
+  .divider {
+    margin: 0 12px;
+  }
+
+  .header-nav {
+    gap: 14px;
+  }
+
+  .app-title[data-el="app-title"] {
+    display: none;
+  }
+}
+
+// ≤620px: hide wordmark text, hide profile name/role, hide the standalone
+// Logout button in favor of the tap-to-open profile flyout. "Ask AI" keeps
+// both icon and label per spec — untouched.
+@media (max-width: 620px) {
+  .app-header {
+    padding: 0 8px;
+  }
+
+  .divider {
+    margin: 0 8px;
+  }
+
+  .header-nav {
+    gap: 10px;
+  }
+
+  .right-group {
+    gap: 8px;
+  }
+
+.user-text[data-el="profile-text"] {
+    display: none;
+  }
+
+  .profile-card {
+    padding: 0 6px;
+  }
+
+  .logout-btn {
+    display: none;
+  }
+}

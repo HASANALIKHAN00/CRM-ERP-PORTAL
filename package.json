@@ -1,0 +1,40 @@
+{
+  "name": "erpnext-reporting-agent",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --proxy-config proxy.conf.json",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "serve:ssr:erpnext-reporting-agent": "node dist/erpnext-reporting-agent/server/server.mjs"
+  },
+  "private": true,
+  "packageManager": "npm@11.6.0",
+  "dependencies": {
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/forms": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/platform-server": "^22.0.0",
+    "@angular/router": "^22.0.0",
+    "@angular/ssr": "^22.0.5",
+    "dompurify": "^3.4.12",
+    "express": "^5.1.0",
+    "marked": "^18.0.6",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.0.5",
+    "@angular/cli": "^22.0.5",
+    "@angular/compiler-cli": "^22.0.0",
+    "@types/dompurify": "^3.0.5",
+    "@types/express": "^5.0.1",
+    "@types/node": "^20.17.19",
+    "prettier": "^3.8.1",
+    "typescript": "~6.0.2"
+  }
+}

@@ -1,0 +1,201 @@
+<div class="chat-page">
+  <div class="mobile-backdrop" *ngIf="mobileDrawerOpen" (click)="closeMobileDrawer()"></div>
+
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed" [class.mobile-open]="mobileDrawerOpen">
+    <div class="sidebar-top">
+      <button class="icon-btn" (click)="onSidebarToggleClick()" aria-label="Collapse sidebar">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="sidebar-heading">
+        <span class="sidebar-label">Chats</span>
+        <span class="sidebar-subtitle">{{ sessions.length }} {{ sessions.length === 1 ? 'Conversation' : 'Conversations' }}</span>
+      </div>
+    </div>
+
+    <button class="new-chat-btn" (click)="startNewChat()">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <span>New chat</span>
+    </button>
+
+    <div class="history">
+      <ng-container *ngFor="let group of groupedSessions">
+        <div class="history-group-label">{{ group.label }}</div>
+        <button
+          *ngFor="let s of group.sessions"
+          class="history-item"
+          [class.active]="s.id === activeSessionId"
+          (click)="selectSession(s.id)">
+          <span class="history-item-bar"></span>
+          <span class="history-item-body">
+            <span class="history-item-title">{{ s.title }}</span>
+            <span class="history-item-meta">{{ sessionDateLabel(s.createdAt) }} &bull; {{ sessionMessageLabel(s) }}</span>
+          </span>
+        </button>
+      </ng-container>
+    </div>
+  </aside>
+
+  <div class="floating-controls" *ngIf="sidebarCollapsed">
+    <button class="icon-btn floating" (click)="toggleSidebar()" aria-label="Expand sidebar">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button class="icon-btn floating" (click)="startNewChat()" aria-label="New chat">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+<main class="chat-main">
+    <ng-container>
+
+      <ng-container *ngIf="showEmptyState; else conversation">
+        <div class="empty-state">
+          <div class="empty-glow" aria-hidden="true"></div>
+
+          <div class="empty-content">
+          <button class="mobile-menu-btn" (click)="openMobileDrawer()" aria-label="Open chat history">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="empty-hero">
+            <h1>Business Intelligence Assistant</h1>
+            <p class="empty-subtitle">
+              Ask questions about sales performance, customer relationships, CRM activity,
+              pipeline health, employee productivity, and operational insights.
+            </p>
+
+            <div class="composer hero-composer">
+              <textarea
+                #composerInput
+                [(ngModel)]="input"
+                (input)="autoGrow(composerInput)"
+                (keydown)="onComposerKeydown($event)"
+                placeholder="Ask your business anything..."
+                rows="1"></textarea>
+              <div class="composer-actions">
+                <button class="ghost-icon-btn" [class.recording]="isRecording" (click)="toggleVoiceInput()" aria-label="Voice input">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="2"/>
+                    <path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </button>
+                <button class="send-btn" [disabled]="!input.trim()" (click)="send()" aria-label="Send">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+            <div class="prompt-grid">
+              <button class="prompt-card" *ngFor="let card of promptCards" (click)="send(card.prompt)">
+                <div class="prompt-icon" [ngSwitch]="card.icon">
+                  <svg *ngSwitchCase="'trending-up'" viewBox="0 0 24 24" fill="none"><path d="M3 17l6-6 4 4 8-8M15 7h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg *ngSwitchCase="'users'" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  <svg *ngSwitchCase="'activity'" viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9-6-18-3 9H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg *ngSwitchCase="'target'" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>
+                  <svg *ngSwitchCase="'wallet'" viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v3M3 7v10a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1h-5a2 2 0 0 0 0 4h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg *ngSwitchCase="'shield-check'" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="prompt-title">{{ card.title }}</div>
+                <div class="prompt-desc">{{ card.desc }}</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #conversation>
+        <div class="message-list" #messageList *ngIf="activeSession as session">
+          <div class="message-track">
+            <button class="mobile-menu-btn" (click)="openMobileDrawer()" aria-label="Open chat history">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+            <div *ngFor="let msg of session.messages; let i = index" class="message-row">
+
+              <div *ngIf="msg.role === 'user'" class="user-message">
+                <div class="bubble">{{ msg.text }}</div>
+              </div>
+
+              <div *ngIf="msg.role === 'assistant'" class="assistant-card">
+                <div class="assistant-badge">AI Analyst</div>
+
+                <div class="thinking" *ngIf="msg.loading">
+                  <span class="thinking-dot"></span>
+                  <span class="thinking-dot"></span>
+                  <span class="thinking-dot"></span>
+                </div>
+                <div class="assistant-error" *ngIf="msg.error">{{ msg.error }}</div>
+
+               <ng-container *ngIf="msg.text">
+                  <div class="assistant-text markdown-body" [innerHTML]="msg.text | markdown"></div>
+
+                  <div class="records-table-wrap" *ngIf="msg.records?.length">
+                    <div class="records-table-scroll">
+                      <table class="records-table">
+                        <thead>
+                          <tr>
+                            <th *ngFor="let col of recordColumns(msg.records)">{{ formatColumnLabel(col) }}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let row of visibleRecords(msg.records)">
+                            <td *ngFor="let col of recordColumns(msg.records)">{{ formatCellValue(row[col]) }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p class="records-table-note" *ngIf="msg.records.length > maxInlineRecords">
+                      Showing {{ maxInlineRecords }} of {{ msg.records.length }} rows — use Export for the full list.
+                    </p>
+                  </div>
+
+                  <div class="sources-block" *ngIf="msg.sourceNote">
+                    <span class="sources-label">Sources</span>
+                    <span class="source-badge">{{ msg.sourceNote }}</span>
+                  </div>
+
+                  <div class="message-actions">
+                    <button class="pill-action" (click)="copyMessage(msg)">
+                      <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" stroke="currentColor" stroke-width="1.6"/><path d="M5 15V5a1 1 0 0 1 1-1h10" stroke="currentColor" stroke-width="1.6"/></svg>
+                      <span>{{ msg.copied ? 'Copied' : 'Copy' }}</span>
+                    </button>
+                    <button class="pill-action" *ngIf="msg.records?.length" (click)="exportMessageRecords(msg)">
+                      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span>Export</span>
+                    </button>
+                    <button class="pill-action" *ngIf="isLatestAssistant(session, i)" (click)="regenerate(session, i)">
+                      <svg viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 4v4h-4M6 20v-4h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span>Regenerate</span>
+                    </button>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="composer-dock">
+          <div class="composer">
+            <textarea
+              #composerInput
+              [(ngModel)]="input"
+              (input)="autoGrow(composerInput)"
+              (keydown)="onComposerKeydown($event)"
+              placeholder="Ask a follow-up..."
+              rows="1"></textarea>
+            <div class="composer-actions">
+              <button class="ghost-icon-btn" [class.recording]="isRecording" (click)="toggleVoiceInput()" aria-label="Voice input">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="2"/>
+                  <path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+              <button class="send-btn" [disabled]="!input.trim()" (click)="send()" aria-label="Send">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+    </ng-container>
+  </main>
+</div>

@@ -1,0 +1,79 @@
+<div class="app-shell" [class.app-shell--activity]="activeTab === 'dashboard' && dashArea === 'activity'">
+  <header class="app-header" *ngIf="!(activeTab === 'dashboard' && dashArea === 'activity')"
+    [class.rt-header-offset]="activeTab === 'dashboard'">
+<div class="logo-block">
+      <img src="boxtech-logo-full.png" alt="BoxTech logo" class="logo" />
+    </div>
+
+    <div class="divider"></div>
+
+    <span class="app-title" data-el="app-title">AI Reporting Agent</span>
+    <span class="demo-env-badge" *ngIf="appConfig.demoMode">Demo Environment</span>
+
+    <nav class="header-nav">
+      <button class="nav-link" [class.active]="activeTab === 'ask-ai'" (click)="setTab('ask-ai')">
+        <span data-el="nav-label">Ask AI</span>
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2l1.8 5.6L19.4 9.4 13.8 11.2 12 17l-1.8-5.8L4.6 9.4l5.6-1.8L12 2z" />
+        </svg>
+      </button>
+      <button class="nav-link" [class.active]="activeTab === 'dashboard'" (click)="setTab('dashboard')">
+        <span data-el="nav-label">Dashboard</span>
+      </button>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="right-group" *ngIf="auth.currentUser() as user">
+      <div class="profile-menu-wrap">
+        <div
+          class="profile-card"
+          role="button"
+          tabindex="0"
+          aria-haspopup="true"
+          [attr.aria-expanded]="profileMenuOpen"
+          (click)="toggleProfileMenu()"
+          (keydown.enter)="toggleProfileMenu()">
+          <div class="avatar">{{ initials }}</div>
+
+          <div class="user-text" data-el="profile-text">
+            <span class="user-name">{{ user.full_name }}</span>
+            <span class="user-role">{{ user.role }}</span>
+          </div>
+        </div>
+
+        <div class="profile-backdrop" *ngIf="profileMenuOpen" (click)="closeProfileMenu()"></div>
+
+        <div class="profile-flyout" *ngIf="profileMenuOpen">
+          <div class="profile-flyout-name">{{ user.full_name }}</div>
+          <div class="profile-flyout-role">{{ user.role }}</div>
+          <button class="profile-flyout-logout" (click)="logout()">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+              <path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+
+      <button class="logout-btn" (click)="logout()">
+        <svg class="logout-icon" viewBox="0 0 24 24" fill="none">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" />
+          <path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        <span class="logout-label" data-el="logout-label">Logout</span>
+      </button>
+
+    </div>
+  </header>
+
+  <main class="app-body">
+    <app-chat *ngIf="activeTab === 'ask-ai'"></app-chat>
+    <app-dashboard *ngIf="activeTab === 'dashboard'" (areaChange)="dashArea = $event"></app-dashboard>
+  </main>
+</div>

@@ -1,0 +1,13 @@
+[Unit]
+Description=BoxTech Daily AI Summary Report
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/docker exec boxtech-reporting-backend python daily_summary_service.py
+StandardOutput=append:/var/log/boxtech-daily-summary.log
+StandardError=append:/var/log/boxtech-daily-summary.log
+
+[Install]
+WantedBy=multi-user.target

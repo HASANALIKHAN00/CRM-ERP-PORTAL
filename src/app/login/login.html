@@ -1,0 +1,61 @@
+<div class="login-shell">
+  <div class="login-content">
+    <div class="login-card">
+    <div class="login-header">
+      <img src="boxtech-logo-full.png" alt="BoxTech logo" class="login-logo" />
+      <span class="login-eyebrow">AI Reporting Agent</span>
+      <span class="demo-env-badge" *ngIf="appConfig.demoMode">Demo Environment</span>
+    </div>
+
+    <p class="login-subtext" *ngIf="!appConfig.demoMode">Use your ERPNext account to access the reporting agent.</p>
+    <p class="login-subtext" *ngIf="appConfig.demoMode">
+      Sign in with the fictional demo account
+      <strong>{{ appConfig.demoEmail }}</strong>
+      and password <strong>demo1234</strong>.
+    </p>
+
+    <div class="login-divider"></div>
+
+    <form class="login-form" (ngSubmit)="submit()">
+      <div class="login-field">
+        <label>Email</label>
+        <div class="login-input-wrap">
+          <svg class="login-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16v16H4z" opacity="0"/>
+            <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6z"/>
+            <polyline points="2 7 12 13 22 7"/>
+          </svg>
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="email"
+            required
+            autocomplete="username" />
+        </div>
+      </div>
+
+      <div class="login-field">
+        <label>Password</label>
+        <div class="login-input-wrap">
+          <svg class="login-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <input
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            required
+            autocomplete="current-password" />
+        </div>
+      </div>
+
+      <p class="login-error" *ngIf="error">{{ error }}</p>
+
+    <button type="submit" class="login-submit" [disabled]="loading">
+        {{ loading ? 'Signing in...' : 'Sign in' }}
+      </button>
+    </form>
+    </div>
+  </div>
+</div>

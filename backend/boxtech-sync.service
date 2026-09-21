@@ -1,0 +1,13 @@
+[Unit]
+Description=BoxTech ERPNext Reporting Sync Service
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/docker exec boxtech-reporting-backend python sync_service.py
+StandardOutput=append:/var/log/boxtech-sync.log
+StandardError=append:/var/log/boxtech-sync.log
+
+[Install]
+WantedBy=multi-user.target

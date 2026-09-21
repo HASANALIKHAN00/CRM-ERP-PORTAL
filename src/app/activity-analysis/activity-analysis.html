@@ -1,0 +1,357 @@
+<div class="activity-analysis-page">
+  <div class="aa-section">
+
+    <!-- ── Loading / Error states ── -->
+    <div class="aa-status-banner aa-status-banner--loading" *ngIf="aaLoading">
+      Loading activity data…
+    </div>
+    <div class="aa-status-banner aa-status-banner--error" *ngIf="aaError && !aaLoading">
+      {{ aaError }}
+      <button type="button" class="aa-btn" (click)="onAaFilterChange()">Retry</button>
+    </div>
+
+    <!-- ── Filter row + actions (title bar removed) ── -->
+    <div class="card aa-filter-card">
+      <div class="aa-filter-grid">
+        <div class="aa-filter-field aa-filter-field--groupby">
+          <label class="aa-field-label">Group By</label>
+          <div class="aa-select-wrap">
+            <select class="aa-select" [(ngModel)]="aaGroupBy" (ngModelChange)="setAaGroupBy($event)">
+              <option *ngFor="let opt of aaGroupByOptions" [value]="opt.value">{{ opt.label }}</option>
+            </select>
+            <svg class="aa-select-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="aa-filter-field">
+          <label class="aa-field-label">Activity</label>
+          <div class="aa-select-wrap">
+            <select class="aa-select" [(ngModel)]="aaActivityFilter" (ngModelChange)="onAaFilterChange()">
+              <option *ngFor="let opt of aaActivityOptions" [value]="opt">{{ opt }}</option>
+            </select>
+            <svg class="aa-select-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="aa-filter-field">
+          <label class="aa-field-label">Country</label>
+          <div class="aa-select-wrap">
+            <select class="aa-select" [(ngModel)]="aaCountryFilter" (ngModelChange)="onAaFilterChange()">
+              <option *ngFor="let opt of aaCountryOptions" [value]="opt">{{ opt }}</option>
+            </select>
+            <svg class="aa-select-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="aa-filter-field">
+          <label class="aa-field-label">Salesperson</label>
+          <div class="aa-select-wrap">
+            <select class="aa-select" [(ngModel)]="aaSalespersonFilter" (ngModelChange)="onAaFilterChange()">
+              <option *ngFor="let opt of aaSalespersonOptions" [value]="opt">{{ opt }}</option>
+            </select>
+            <svg class="aa-select-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="aa-filter-field aa-filter-field--daterange">
+          <label class="aa-field-label">Date Range</label>
+          <div class="aa-daterange-wrap">
+            <div class="aa-date-box">
+              <input type="date" class="aa-date-input" [(ngModel)]="aaFromDate"
+                (ngModelChange)="onAaCustomDateChange()" placeholder="From date" />
+            </div>
+            <span class="aa-date-sep">→</span>
+            <div class="aa-date-box">
+              <input type="date" class="aa-date-input" [(ngModel)]="aaToDate"
+                (ngModelChange)="onAaCustomDateChange()" placeholder="To date" />
+            </div>
+            <button type="button" class="aa-date-clear" *ngIf="aaFromDate || aaToDate"
+              (click)="aaFromDate = ''; aaToDate = ''; setAaDatePreset('all')" title="Clear custom dates">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="aa-header-actions">
+        <span class="aa-updated" *ngIf="updatedLabel()">
+          <span class="aa-updated-dot"></span>
+          <span class="aa-updated-label">{{ updatedLabel() }}</span>
+        </span>
+        <div class="aa-header-actions-row">
+          <span class="aa-badge aa-badge--count">
+            <strong>{{ aaFilteredRecords.length.toLocaleString() }}</strong> / {{ aaGrandTotal.toLocaleString() }} records
+          </span>
+          <button type="button" class="aa-btn aa-btn--export" (click)="exportAaRecordsToExcel()"
+            title="Export filtered records to Excel">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span>Export Excel</span>
+          </button>
+          <button type="button" class="aa-btn aa-btn--reset" (click)="resetAaFilters()"
+            title="Reset all Activity Analytics filters">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10" />
+              <polyline points="1 20 1 14 7 14" />
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+            </svg>
+            <span>Reset</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 4 Top KPI Cards (Matching BoxTech Reference Cards) ── -->
+    <div class="aa-kpi-grid">
+
+      <!-- Card 1: Total Activities -->
+      <div class="card aa-kpi-card aa-kpi--activities">
+        <div class="aa-kpi-top">
+          <div class="aa-kpi-icon-badge aa-kpi-icon--blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+          </div>
+          <span class="aa-kpi-badge">Active Scope</span>
+        </div>
+        <div class="aa-kpi-content">
+          <span class="aa-kpi-metric-title">TOTAL ACTIVITIES</span>
+          <div class="aa-kpi-number">{{ aaTotalActivities.toLocaleString() }}</div>
+          <p class="aa-kpi-metric-sub">
+            <span *ngIf="aaTotalActivities === aaGrandTotal">All {{ aaGrandTotal.toLocaleString() }} dataset records</span>
+            <span *ngIf="aaTotalActivities !== aaGrandTotal">{{ aaTotalActivities.toLocaleString() }} of {{ aaGrandTotal.toLocaleString() }} total records
+              ({{ (aaGrandTotal ? (aaTotalActivities / aaGrandTotal * 100) : 0) | number:'1.0-0' }}%)</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2: Number of Clients -->
+      <div class="card aa-kpi-card aa-kpi--clients">
+        <div class="aa-kpi-top">
+          <div class="aa-kpi-icon-badge aa-kpi-icon--purple">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          </div>
+          <span class="aa-kpi-badge">Unique Reach</span>
+        </div>
+        <div class="aa-kpi-content">
+          <span class="aa-kpi-metric-title">NUMBER OF CLIENTS</span>
+          <div class="aa-kpi-number">{{ aaUniqueClients.toLocaleString() }}</div>
+          <p class="aa-kpi-metric-sub">
+            <span *ngIf="aaUniqueClients > 0">Avg {{ (aaTotalActivities / aaUniqueClients) | number:'1.1-1' }}
+              activities per client</span>
+            <span *ngIf="aaUniqueClients === 0">No client records</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3: Total Amount -->
+      <div class="card aa-kpi-card aa-kpi--amount">
+        <div class="aa-kpi-top">
+          <div class="aa-kpi-icon-badge aa-kpi-icon--green">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23" />
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
+          </div>
+          <span class="aa-kpi-badge">Financial</span>
+        </div>
+        <div class="aa-kpi-content">
+          <span class="aa-kpi-metric-title">TOTAL AMOUNT</span>
+          <div class="aa-kpi-number">${{ aaSumAmount.toLocaleString(undefined, {minimumFractionDigits: 2,
+            maximumFractionDigits: 2}) }}</div>
+          <p class="aa-kpi-metric-sub">
+            <span>{{ aaFinancialCount }} financial transactions</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 4: Empty Time Slots -->
+      <div class="card aa-kpi-card aa-kpi--empty">
+        <div class="aa-kpi-top">
+          <div class="aa-kpi-icon-badge aa-kpi-icon--amber">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </div>
+          <span class="aa-kpi-badge">{{ aaChildPeriodLabel | uppercase }}</span>
+        </div>
+        <div class="aa-kpi-content">
+          <span class="aa-kpi-metric-title">EMPTY TIME SLOTS</span>
+          <div class="aa-kpi-number">{{ aaEmptyTimeSlots }} <span class="aa-kpi-number-sub">/ {{ aaTotalSlots
+              }}</span></div>
+          <p class="aa-kpi-metric-sub">
+            <span *ngIf="aaTotalSlots > 0">{{ ((aaTotalSlots - aaEmptyTimeSlots) / aaTotalSlots * 100) |
+              number:'1.0-0' }}% active periods ({{ aaTotalSlots - aaEmptyTimeSlots }} with activity)</span>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Activity & Client Trend Graph ── -->
+    <div class="card aa-chart-card">
+      <div class="aa-chart-footer">
+        <div class="aa-chart-legend">
+          <span class="aa-legend-item">
+            <span class="aa-legend-dot aa-legend-dot--act"></span>
+            <span>Activities</span>
+          </span>
+          <span class="aa-legend-item">
+            <span class="aa-legend-dot aa-legend-dot--cli"></span>
+            <span>Unique Clients</span>
+          </span>
+        </div>
+        <span class="aa-badge aa-badge--period">{{ aaChildPeriodLabel | uppercase }}</span>
+      </div>
+
+      <!-- Visual Bar Plot -->
+      <div class="aa-chart-body" *ngIf="aaTrendData.length">
+        <!-- Y-axis -->
+        <div class="aa-chart-yaxis">
+          <div class="aa-chart-yaxis-inner">
+            <span class="aa-yaxis-tick" *ngFor="let tick of aaYAxisTicks"
+              [style.bottom.%]="aaChartScaleMax > 0 ? (tick / aaChartScaleMax) * 100 : 0">{{ tick | number:'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <!-- Plot area -->
+        <div class="aa-chart-plot-wrap">
+          <div class="aa-chart-plot" [style.minWidth.px]="aaChartPlotMinWidth">
+            <div class="aa-chart-plot-area">
+            <div class="aa-chart-plot-inner">
+            <!-- Horizontal Grid Lines -->
+            <div class="aa-chart-gridline" *ngFor="let tick of aaYAxisTicks"
+              [style.bottom.%]="aaChartScaleMax > 0 ? (tick / aaChartScaleMax) * 100 : 0"></div>
+
+            <!-- Average Reference Line -->
+            <div class="aa-chart-avg-line" *ngIf="aaAvgPerSlot > 0 && aaChartScaleMax > 0"
+              [style.bottom.%]="(aaAvgPerSlot / aaChartScaleMax) * 100">
+              <span class="aa-chart-avg-tag">Avg {{ aaAvgPerSlot }}</span>
+            </div>
+
+            <!-- Bars Column Container -->
+            <div class="aa-chart-bars" #aaChartBars>
+              <svg class="aa-heartbeat" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"
+                *ngIf="aaHeartbeatPath">
+                <path class="aa-heartbeat-glow" [attr.d]="aaHeartbeatPath" fill="none" />
+                <path class="aa-heartbeat-line" [attr.d]="aaHeartbeatPath" fill="none" />
+              </svg>
+              <div class="aa-chart-col" *ngFor="let p of aaTrendData; let i = index"
+                [class.aa-chart-col--peak]="p.isPeak" [class.aa-chart-col--empty]="p.activityCount === 0"
+                (mouseenter)="onAaBarMouseEnter(i, p, $event)" (mouseleave)="onAaBarMouseLeave()">
+
+                <!-- Activity Bar -->
+                <div class="aa-chart-bar"
+                  [style.height.%]="aaBarHeightPct(p)"
+                  [style.background]="p.activityCount > 0 ? aaBarColor(i) : 'transparent'">
+                </div>
+
+                <!-- Unique Client Marker -->
+                <div class="aa-chart-client-marker" *ngIf="p.uniqueClients > 0"
+                  [style.bottom.%]="aaClientHeightPct(p)"
+                  title="{{ p.uniqueClients }} unique clients">
+                </div>
+
+                <!-- Peak Tag -->
+                <div class="aa-chart-peak-badge" *ngIf="p.isPeak">
+                  <span class="aa-peak-dot"></span>
+                  <span>{{ p.activityCount }}</span>
+                </div>
+
+                <!-- Value above bar if nonzero -->
+                <span class="aa-chart-bar-value"
+                  *ngIf="p.activityCount > 0 && !p.isPeak && aaTrendData.length <= 48">
+                  {{ p.activityCount }}
+                </span>
+
+                <!-- Tooltip stays above when it fits, otherwise uses the open space below a tall bar. -->
+                <div class="aa-chart-tooltip"
+                  [class.aa-chart-tooltip--docked]="aaTooltipIndex === i"
+                  [class.aa-chart-tooltip--first]="i === 0"
+                  [class.aa-chart-tooltip--last]="i === aaTrendData.length - 1"
+                  [style.top.px]="aaTooltipIndex === i ? aaTooltipTopPx : null"
+                  [style.left.px]="aaTooltipIndex === i ? aaTooltipLeftPx : null"
+                  [style.bottom.%]="aaTooltipIndex === i ? null : aaBarHeightPct(p)">
+                  <div class="aa-tt-title">{{ p.label || p.slot }}</div>
+                  <div class="aa-tt-row">
+                    <span class="aa-tt-label">Activities:</span>
+                    <span class="aa-tt-val"><strong>{{ p.activityCount }}</strong></span>
+                  </div>
+                  <div class="aa-tt-row">
+                    <span class="aa-tt-label">Unique Clients:</span>
+                    <span class="aa-tt-val">{{ p.uniqueClients }}</span>
+                  </div>
+                  <div class="aa-tt-row" *ngIf="p.amount > 0">
+                    <span class="aa-tt-label">Sales Value:</span>
+                    <span class="aa-tt-val">${{ p.amount.toLocaleString(undefined, {minimumFractionDigits: 0,
+                      maximumFractionDigits: 0}) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+            </div>
+
+            <!-- X-Axis Labels -->
+            <div class="aa-chart-xaxis">
+              <div class="aa-chart-xlabel" *ngFor="let p of aaTrendData; let i = index"
+                [class.aa-chart-xlabel--hidden]="aaTrendData.length > 30 && (i % 2 !== 0 && aaGroupBy === '30min')">
+                {{ p.label || p.slot }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Peak & Coverage Insight Banner -->
+      <div class="aa-chart-insight" *ngIf="aaPeakSlot as peak">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="16" x2="12" y2="12" />
+          <line x1="12" y1="8" x2="12.01" y2="8" />
+        </svg>
+        <span>
+          Peak activity occurs at <strong>{{ peak.slot }}</strong> with
+          <strong>{{ peak.activityCount }}</strong> activities and
+          <strong>{{ peak.uniqueClients }}</strong> unique clients.
+          <span *ngIf="aaEmptyTimeSlots > 0">
+            There are <strong>{{ aaEmptyTimeSlots }}</strong> empty periods with zero recorded activities.
+          </span>
+        </span>
+      </div>
+    </div>
+
+  </div>
+</div>

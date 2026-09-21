@@ -1,0 +1,220 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;
+  height: 100dvh;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior-y: none;
+}
+
+:root {
+  /* Ground */
+  --color-bg: #f3f2f2;
+  --color-text: #201e1d;
+  --color-divider: rgba(32, 30, 29, 0.4);
+  --color-neutral-100: #ececec;
+  --color-neutral-200: #e0e0e0;
+
+/* Accent -- single dark BoxTech green throughout, no light/mint tints. */
+  --color-accent-100: #e9ebea;
+  --color-accent-200: #d3d8d5;
+  --color-accent-500: #0f241a;
+  --color-accent-700: #081510;
+  --color-accent-900: #050b08;
+  --color-accent: var(--color-accent-500);
+
+  /* Type */
+  --font-heading: 'Manrope', system-ui, sans-serif;
+  --font-body: 'Manrope', system-ui, sans-serif;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+
+  /* Radius -- intentionally zero everywhere, never round a corner */
+  --radius-md: 0;
+}
+
+::selection {
+  background: var(--color-accent-200);
+}
+
+/* ---------- Shared components ---------- */
+
+.card {
+  background: #ffffff;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+}
+
+.card-title {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  padding: var(--space-2) var(--space-4);
+  text-align: left;
+  border: 2px solid transparent;
+  transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.btn-primary {
+  background: var(--color-accent-500);
+  color: #ffffff;
+
+  &:hover:not(:disabled) {
+    background: var(--color-accent-700);
+  }
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--color-divider);
+  color: var(--color-text);
+
+  &:hover:not(:disabled) {
+    background: var(--color-accent-100);
+    border-color: var(--color-accent-500);
+  }
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text);
+
+  &:hover:not(:disabled) {
+    background: var(--color-accent-100);
+  }
+}
+
+.btn-icon {
+  padding: var(--space-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 12px;
+  border: 2px solid var(--color-divider);
+  border-radius: var(--radius-md);
+}
+
+.tag-accent {
+  border-color: var(--color-accent-500);
+  background: var(--color-accent-500);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+}
+
+.input {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text);
+  background: #ffffff;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: var(--color-text);
+    opacity: 0.5;
+  }
+
+  &:focus {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: -1px;
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th, td {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-divider);
+  }
+
+  th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.55;
+    font-weight: 600;
+  }
+}
+
+.seg {
+  display: inline-flex;
+  border: 2px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.seg-opt {
+  padding: var(--space-2) var(--space-4);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  color: var(--color-text);
+  border-right: 1px solid var(--color-divider);
+
+  &:last-child {
+    border-right: none;
+  }
+
+  &:hover {
+    background: var(--color-accent-100);
+  }
+
+  &.active {
+    background: var(--color-accent-500);
+    color: #ffffff;
+  }
+}

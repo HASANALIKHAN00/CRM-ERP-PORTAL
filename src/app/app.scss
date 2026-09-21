@@ -1,0 +1,57 @@
+.app-shell {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+}
+
+.app-header {
+  background: #ffffff;
+  border-bottom: 1px solid #E5E7EB;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.logo {
+  height: 56px;
+  width: auto;
+}
+
+.app-title {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.app-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 20px;
+  flex: 1;
+  min-height: 0;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+app-chat, app-dashboard {
+  display: flex;
+  min-height: 0;
+}
+
+@media (max-width: 800px) {
+  .app-shell {
+    height: auto;
+    overflow: visible;
+  }
+
+  .app-body {
+    grid-template-columns: 1fr;
+  }
+}
